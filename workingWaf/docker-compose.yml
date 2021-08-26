@@ -1,0 +1,28 @@
+version: "3.9" 
+services:
+  web:
+    image: owasp/modsecurity-crs:v3.3.2-nginx
+    ports:
+      - "80:80"
+      - "81:443"
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+      - ./rules:/opt/owasp-crs/rules:ro
+      - ./403.html:/usr/share/nginx/html/403.html
+    networks:
+      - waf_ag
+      - dis_ag
+
+
+  app:
+    hostname: app
+    image: vulnerables/web-dvwa
+    networks:
+      - waf_ag
+
+
+networks:
+  waf_ag:
+    driver: bridge
+    internal: true
+  dis_ag: 
